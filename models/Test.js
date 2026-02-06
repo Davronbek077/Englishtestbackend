@@ -22,7 +22,7 @@ const testSchema = new mongoose.Schema(
 
     level: {
       type: String,
-      enum: ["A1", "A2", "B1", "B2", "C1"],
+      enum: ["A1", "A2", "B1", "B2", "B2+", "C1"],
       required: true
     },
 
