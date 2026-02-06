@@ -24,6 +24,30 @@ exports.getQuestions = async (req, res) => {
   res.json(questions);
 };
 
+/* CREATE TEST */
+exports.createTest = async (req, res) => {
+  try {
+    const { title, skill, level, description, isPro } = req.body;
+
+    if (!title || !skill || !level) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const test = await Test.create({
+      title,
+      skill,
+      level,
+      description,
+      isPro
+    });
+
+    res.status(201).json(test);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 /* CHECK ANSWERS */
 exports.checkAnswers = async (req, res) => {
   try {
