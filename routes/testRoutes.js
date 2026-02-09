@@ -10,6 +10,8 @@ const {
   getTestById
 } = require("../controllers/testController");
 
+const upload = require("../utils/Uploads")
+
 // Barcha testlar
 router.get("/", getTests);
 
@@ -27,5 +29,7 @@ router.post("/check", checkAnswers);
 
 // Bitta karta + savollar + darsliklarni olish
 router.get("/:testId", getTestById);
+
+router.post("/", upload.single("thumbnail"), createTest);
 
 module.exports = router;

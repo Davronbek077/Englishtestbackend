@@ -37,7 +37,15 @@ exports.createTest = async (req, res) => {
     const { title, skill, level, description, thumbnail, downloads, isPro } = req.body;
     if (!title || !skill || !level) return res.status(400).json({ message: "Missing required fields" });
 
-    const test = await Test.create({ title, skill, level, description, thumbnail, downloads, isPro });
+    const test = await Test.create({ 
+      title, 
+      skill, 
+      level, 
+      description, 
+      thumbnail: req.file ? `/uploads/${req.file.filename}` : null, 
+      downloads, 
+      isPro 
+    });
     res.status(201).json(test);
   } catch (err) {
     console.error(err);
