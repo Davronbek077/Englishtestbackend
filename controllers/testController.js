@@ -34,22 +34,27 @@ exports.getTestById = async (req, res) => {
 /* CREATE TEST (Admin karta + darslik + downloads) */
 exports.createTest = async (req, res) => {
   try {
-    const { title, skill, level, description, thumbnail, downloads, isPro } = req.body;
-    if (!title || !skill || !level) return res.status(400).json({ message: "Missing required fields" });
+    console.log("BODY:", req.body);       // frontenddan kelayotgan ma’lumot
+    console.log("FILE:", req.file);       // fayl kelayotgan yoki yo‘qligi
 
-    const test = await Test.create({ 
-      title, 
-      skill, 
-      level, 
-      description, 
-      thumbnail: req.file ? `/uploads/${req.file.filename}` : null, 
-      downloads, 
-      isPro 
+    const { title, skill, level, description, downloads, isPro } = req.body;
+    if (!title || !skill || !level)
+      return res.status(400).json({ message: "Missing required fields" });
+
+    const test = await Test.create({
+      title,
+      skill,
+      level,
+      description,
+      thumbnail: req.file ? `/uploads/${req.file.filename}` : null,
+      downloads: downloads ? downloads.split(",") : [],
+      isPro
     });
+
     res.status(201).json(test);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    console.error("CREATE TEST ERROR:", err); // ❗ xatoni aniq ko‘rsatadi
+    res.status(500).json({ message: err.message });
   }
 };
 
