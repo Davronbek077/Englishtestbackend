@@ -14,6 +14,7 @@ if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 connectDB();
 

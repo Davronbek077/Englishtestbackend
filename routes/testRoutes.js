@@ -10,26 +10,24 @@ const {
   getTestById
 } = require("../controllers/testController");
 
-const upload = require("../utils/Uploads")
+const upload = require("../utils/Uploads");
 
 // Barcha testlar
 router.get("/", getTests);
 
-// Admin karta + darslik + downloads qo‘shish
-router.post("/", createTest); 
+// Admin karta yaratish (image bilan)
+router.post("/", upload.single("thumbnail"), createTest);
 
 // Test ichidagi savollarni olish
 router.get("/:testId/questions", getQuestions);
 
-// Yangi savol yaratish (Admin)
+// Yangi savol yaratish
 router.post("/questions", createQuestion);
 
 // Student javoblarini tekshirish
 router.post("/check", checkAnswers);
 
-// Bitta karta + savollar + darsliklarni olish
+// Bitta karta + savollar
 router.get("/:testId", getTestById);
-
-router.post("/", upload.single("thumbnail"), createTest);
 
 module.exports = router;

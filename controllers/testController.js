@@ -48,7 +48,7 @@ exports.createTest = async (req, res) => {
       description,
       thumbnail: req.file ? `/uploads/${req.file.filename}` : null,
       downloads: downloads ? downloads.split(",") : [],
-      isPro
+      isPro: isPro === "true"
     });
 
     res.status(201).json(test);
@@ -63,6 +63,17 @@ exports.createQuestion = async (req, res) => {
   try {
     const q = await Question.create(req.body);
     res.status(201).json(q);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.getQuestions = async (req, res) => {
+  try {
+    const questions = await Question.find({ testId: req.params.testId })
+      .select("-correctAnswer -correctText -correctOrder -pairs.right");
+
+    res.json(questions);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }
