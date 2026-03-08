@@ -1,27 +1,39 @@
-require("dotenv").config(); // ENG YUQORIDA
+require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const path = require("path");
+const fs = require("fs");
 
 const testRoutes = require("./routes/testRoutes");
 const questionRoutes = require("./routes/QuestionRoutes");
 
 const app = express();
 
-const fs = require("fs");
-if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
+/* uploads folder */
+const uploadPath = path.join(__dirname, "uploads");
 
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+
+/* middlewares */
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
+/* database */
 connectDB();
 
+/* routes */
 app.use("/api/tests", testRoutes);
 app.use("/api/questions", questionRoutes);
-app.use("/uploads", express.static("uploads"));
 
+/* static files */
+app.use("/uploads", express.static(uploadPath));
+
+/* start server */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
