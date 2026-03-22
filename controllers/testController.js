@@ -32,28 +32,40 @@ exports.getTestById = async (req, res) => {
 };
 
 /* CREATE TEST (Admin karta + darslik + downloads) */
+const imagekit = require("../utils/imagekit");
+
 exports.createTest = async (req, res) => {
   try {
-    console.log("BODY:", req.body);       // frontenddan kelayotgan ma’lumot
-    console.log("FILE:", req.file);       // fayl kelayotgan yoki yo‘qligi
-
     const { title, skill, level, description, downloads, isPro } = req.body;
-    if (!title || !skill || !level)
+
+    if (!title || !skill || !level) {
       return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    let imageUrl = null;
+
+    if (req.file) {
+      const result = await imagekit.upload({
+        file: req.file.buffer, // 🔥 buffer
+        fileName: Date.now() + "-" + req.file.originalname
+      });
+
+      imageUrl = result.url; // 🔥 BU ENDI CLOUD URL
+    }
 
     const test = await Test.create({
       title,
       skill,
       level,
       description,
-      thumbnail: req.file ? `/uploads/${req.file.filename}` : null,
+      thumbnail: imageUrl,
       downloads: downloads ? downloads.split(",") : [],
       isPro: isPro === "true"
     });
 
     res.status(201).json(test);
   } catch (err) {
-    console.error("CREATE TEST ERROR:", err); // ❗ xatoni aniq ko‘rsatadi
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
