@@ -36,6 +36,7 @@ const imagekit = require("../utils/imagekit");
 
 exports.createTest = async (req, res) => {
   try {
+    console.log("FILE:", req.file);
     const { title, skill, level, description, downloads, isPro } = req.body;
 
     if (!title || !skill || !level) {
@@ -50,7 +51,7 @@ exports.createTest = async (req, res) => {
         fileName: Date.now() + "-" + req.file.originalname
       });
 
-      imageUrl = result.url; // 🔥 BU ENDI CLOUD URL
+      imageUrl = result.url;
     }
 
     const test = await Test.create({
