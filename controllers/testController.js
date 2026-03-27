@@ -16,6 +16,22 @@ exports.getTests = async (req, res) => {
   }
 };
 
+// DELETE all tests + their questions
+exports.deleteAllTests = async (req, res) => {
+  try {
+    // Barcha testlarni o'chirish
+    await Test.deleteMany({});
+
+    // Barcha savollarni o'chirish
+    await Question.deleteMany({});
+
+    res.json({ message: "All tests and their questions have been deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 /* GET SINGLE TEST (Card Detail) */
 exports.getTestById = async (req, res) => {
   try {

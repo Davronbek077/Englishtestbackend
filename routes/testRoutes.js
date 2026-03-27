@@ -7,7 +7,8 @@ const {
   checkAnswers,
   createTest,
   createQuestion,
-  getTestById
+  getTestById,
+  deleteAllTests
 } = require("../controllers/testController");
 
 const upload = require("../utils/Uploads");
@@ -29,5 +30,7 @@ router.post("/check", checkAnswers);
 
 // Bitta karta + savollar
 router.get("/:testId", getTestById);
+
+router.delete("/", deleteAllTests);
 
 module.exports = router;
