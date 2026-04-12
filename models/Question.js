@@ -1,50 +1,37 @@
 const mongoose = require("mongoose");
 
-const questionSchema = new mongoose.Schema({
-  testId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Test"
-  },
+const questionSchema = new mongoose.Schema(
+  {
+    testId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Test",
+      required: true
+    },
 
-  type: {
-    type: String,
-    enum: [
-      "mcq",
-      "fill",
-      "multi-fill",
-      "matching",
-      "ordering",
-      "writing",
-      "listening"
-    ]
-  },
+    type: {
+      type: String,
+      enum: [
+        "dropdown-fill", // test-english style
+        "reading",
+        "listening",
+        "writing"
+      ],
+      required: true
+    },
 
-  question: String,
+    // Instruction (masalan: Choose correct answer)
+    question: {
+      type: String,
+      required: true
+    },
 
-  /* MCQ + Listening */
-  options: [String],
-  correctAnswer: Number,
-
-  /* Fill & Multi-fill */
-  correctText: [String],
-
-  /* Matching */
-  pairs: [
-    {
-      left: String,
-      right: String
+    // 🔥 Universal data (hamma type uchun)
+    content: {
+      type: Object,
+      required: true
     }
-  ],
-
-  /* Ordering */
-  words: [String],
-  correctOrder: [String],
-
-  /* Listening */
-  audioUrl: String,
-
-  /* Writing */
-  minWords: Number
-});
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("Question", questionSchema);

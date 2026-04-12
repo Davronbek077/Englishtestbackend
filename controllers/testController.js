@@ -38,8 +38,8 @@ exports.getTestById = async (req, res) => {
     const test = await Test.findById(req.params.testId);
     if (!test) return res.status(404).json({ message: "Test not found" });
 
-    const questions = await Question.find({ testId: req.params.testId })
-      .select("-correctAnswer -correctText -correctOrder -pairs.right");
+    // ❗ endi hech narsani yashirmaymiz
+    const questions = await Question.find({ testId: req.params.testId });
 
     res.json({ test, questions });
   } catch (err) {
@@ -90,9 +90,22 @@ exports.createTest = async (req, res) => {
 /* CREATE QUESTION */
 exports.createQuestion = async (req, res) => {
   try {
-    const q = await Question.create(req.body);
+    const { testId, type, question, content } = req.body;
+
+    if (!testId || !type || !question || !content) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
+
+    const q = await Question.create({
+      testId,
+      type,
+      question,
+      content
+    });
+
     res.status(201).json(q);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -100,7 +113,6 @@ exports.createQuestion = async (req, res) => {
 exports.getQuestions = async (req, res) => {
   try {
     const questions = await Question.find({ testId: req.params.testId })
-      .select("-correctAnswer -correctText -correctOrder -pairs.right");
 
     res.json(questions);
   } catch (err) {
@@ -108,46 +120,62 @@ exports.getQuestions = async (req, res) => {
   }
 };
 
+exports.deleteQuestion = async (req, res) => {
+  try {
+    await Question.findByIdAndDelete(req.params.id);
+    res.json({ message: "Savol o‘chirildi" });
+  } catch (err) {
+    res.status(500).json({ message: "Delete xatolik" });
+  }
+};
+
 /* CHECK ANSWERS */
 exports.checkAnswers = async (req, res) => {
   try {
     const { answers } = req.body;
-    if (!answers || !Array.isArray(answers)) return res.status(400).json({ message: "Invalid answers format" });
+
+    if (!answers || !Array.isArray(answers)) {
+      return res.status(400).json({ message: "Invalid answers format" });
+    }
 
     let score = 0;
-    let pending = 0;
 
     for (let ans of answers) {
       const q = await Question.findById(ans.questionId);
       if (!q) continue;
 
-      switch (q.type) {
-        case "mcq":
-        case "listening":
-          if (ans.selected === q.correctAnswer) score++;
-          break;
-        case "fill":
-          if (q.correctText.some(t => t.toLowerCase() === ans.text?.trim().toLowerCase())) score++;
-          break;
-        case "multi-fill":
-          if (JSON.stringify(ans.texts?.map(t => t.toLowerCase())) === JSON.stringify(q.correctText.map(t => t.toLowerCase()))) score++;
-          break;
-        case "ordering":
-          if (JSON.stringify(ans.order) === JSON.stringify(q.correctOrder)) score++;
-          break;
-        case "matching":
-          if (JSON.stringify(ans.pairs) === JSON.stringify(q.pairs)) score++;
-          break;
-        case "writing":
-          pending++;
-          break;
+      // 🔥 dropdown-fill tekshirish
+      if (q.type === "dropdown-fill") {
+        let correct = true;
+
+        q.content.sentences.forEach((sentence, sIndex) => {
+          sentence.blanks.forEach((blank, bIndex) => {
+            const userAnswer = ans.answers?.[sIndex]?.[bIndex];
+
+            if (userAnswer !== blank.correct) {
+              correct = false;
+            }
+          });
+        });
+
+        if (correct) score++;
+      }
+
+      // 🔥 writing (tekshirilmaydi)
+      if (q.type === "writing") {
+        // manual review
       }
     }
 
     const total = answers.length;
     const percent = total ? Math.round((score / total) * 100) : 0;
 
-    res.json({ correct: score, total, percent, pendingReview: pending });
+    res.json({
+      correct: score,
+      total,
+      percent
+    });
+
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

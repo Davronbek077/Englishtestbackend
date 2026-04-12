@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const Question = require("../models/Question");
+const controller = require("../controllers/testController");
 
-router.post("/", async (req, res) => {
-  try {
-    const question = await Question.create(req.body);
-    res.status(201).json(question);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+// create
+router.post("/", controller.createQuestion);
+
+// get by test
+router.get("/:testId", controller.getQuestions);
+
+// delete
+router.delete("/:id", controller.deleteQuestion);
 
 module.exports = router;
