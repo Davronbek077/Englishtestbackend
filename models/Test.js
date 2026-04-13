@@ -7,7 +7,6 @@ const testSchema = new mongoose.Schema({
   description: { type: String },           // darslik yoki tushuntirish
   thumbnail: { type: String },             // karta rasmi
   downloads: [{ type: String }],           // video yoki fayllar
-  isPro: { type: Boolean, default: false }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Test", testSchema);

@@ -53,7 +53,7 @@ const imagekit = require("../utils/imagekit");
 exports.createTest = async (req, res) => {
   try {
     console.log("FILE:", req.file);
-    const { title, skill, level, description, downloads, isPro } = req.body;
+    const { title, skill, level, description, downloads } = req.body;
 
     if (!title || !skill || !level) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -77,7 +77,6 @@ exports.createTest = async (req, res) => {
       description,
       thumbnail: imageUrl,
       downloads: downloads ? downloads.split(",") : [],
-      isPro: isPro === "true"
     });
 
     res.status(201).json(test);
