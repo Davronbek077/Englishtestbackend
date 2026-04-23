@@ -12,9 +12,7 @@ const questionSchema = new mongoose.Schema(
       type: String,
       enum: [
         "dropdown-fill", // test-english style
-        "reading",
-        "listening",
-        "writing"
+        "mcq"
       ],
       required: true
     },
