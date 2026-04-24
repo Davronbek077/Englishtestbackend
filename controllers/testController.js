@@ -160,6 +160,15 @@ exports.checkAnswers = async (req, res) => {
         if (correct) score++;
       }
 
+      // 🔥 MCQ tekshirish
+if (q.type === "mcq") {
+  const userAnswer = ans.answers?.[0]; // frontenddan [2] keladi
+
+  if (userAnswer === q.content.correctAnswer) {
+    score++;
+  }
+}
+
       // 🔥 writing (tekshirilmaydi)
       if (q.type === "writing") {
         // manual review
