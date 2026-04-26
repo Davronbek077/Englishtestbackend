@@ -137,47 +137,49 @@ exports.checkAnswers = async (req, res) => {
       return res.status(400).json({ message: "Invalid answers format" });
     }
 
-    let score = 0;
 
+    let score = 0;
+    let total = 0;
+    
     for (let ans of answers) {
       const q = await Question.findById(ans.questionId);
       if (!q) continue;
-
-      // 🔥 dropdown-fill tekshirish
+    
+      // 🔽 DROPDOWN (har blank = 1 ball)
       if (q.type === "dropdown-fill") {
-        let correct = true;
-
-        q.content.sentences.forEach((sentence, sIndex) => {
-          sentence.blanks.forEach((blank, bIndex) => {
-            const userAnswer = ans.answers?.[sIndex]?.[bIndex];
-
-            if (userAnswer !== blank.correct) {
-              correct = false;
-            }
-          });
-        });
-
-        if (correct) score++;
+        const blanks = q.content?.blanks || {};
+    
+        for (let id in blanks) {
+          total++;
+    
+          const userAnswer = ans.answers?.[id];
+          const correctAnswer = blanks[id].correct;
+    
+          if (userAnswer === correctAnswer) {
+            score++;
+          }
+        }
       }
-
-      // 🔥 MCQ tekshirish
-if (q.type === "mcq") {
-  const userAnswer = ans.answers?.[0]; // frontenddan [2] keladi
-
-  if (userAnswer === q.content.correctAnswer) {
-    score++;
-  }
-}
-
-      // 🔥 writing (tekshirilmaydi)
+    
+      // 🔽 MCQ
+      if (q.type === "mcq") {
+        total++;
+    
+        const userAnswer = ans.answers?.[0];
+    
+        if (Number(userAnswer) === Number(q.content.correctIndex)) {
+          score++;
+        }
+      }
+    
+      // 🔽 writing (keyinchalik)
       if (q.type === "writing") {
-        // manual review
+        // hozircha skip
       }
     }
-
-    const total = answers.length;
+    
     const percent = total ? Math.round((score / total) * 100) : 0;
-
+    
     res.json({
       correct: score,
       total,
