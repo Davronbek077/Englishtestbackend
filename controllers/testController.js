@@ -171,6 +171,21 @@ exports.checkAnswers = async (req, res) => {
           score++;
         }
       }
+
+      if (q.type === "fill") {
+        const blanks = q.content?.blanks || {};
+      
+        for (let id in blanks) {
+          total++;
+      
+          const userAnswer = ans.answers?.[id]?.trim().toLowerCase();
+          const correctAnswer = blanks[id].correct.trim().toLowerCase();
+      
+          if (userAnswer === correctAnswer) {
+            score++;
+          }
+        }
+      }
     
       // 🔽 writing (keyinchalik)
       if (q.type === "writing") {
