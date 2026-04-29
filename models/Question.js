@@ -18,6 +18,11 @@ const questionSchema = new mongoose.Schema(
       required: true
     },
 
+    instruction: {
+      type: String,
+      default: ""
+    },
+
     // Instruction (masalan: Choose correct answer)
     question: {
       type: String,
