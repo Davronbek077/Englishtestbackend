@@ -17,6 +17,8 @@ const upload = require("../utils/Uploads");
 
 router.put("/:id", uploadImage.single("image"), async (req, res) => {
   try {
+    const imagekit = require("../utils/imagekit");
+
     const { explanation, downloadText } = req.body;
 
     let downloads = [];
@@ -27,11 +29,17 @@ router.put("/:id", uploadImage.single("image"), async (req, res) => {
     const updateData = {
       explanation,
       downloadText,
-      downloads
+      downloads,
     };
 
     if (req.file) {
-      updateData.explanationImage = `/uploads/${req.file.filename}`;
+      const result = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: Date.now() + "-" + req.file.originalname,
+        folder: "explanations",
+      });
+
+      updateData.explanationImage = result.url;
     }
 
     const updated = await Test.findByIdAndUpdate(
@@ -43,7 +51,7 @@ router.put("/:id", uploadImage.single("image"), async (req, res) => {
     res.json(updated);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Xatolik" });
+    res.status(500).json({ error: err.message });
   }
 });
 
