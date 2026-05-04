@@ -89,7 +89,7 @@ exports.createTest = async (req, res) => {
 /* CREATE QUESTION */
 exports.createQuestion = async (req, res) => {
   try {
-    const { testId, type, question, content, instruction } = req.body;
+    const { testId, type, question, content, instruction, section } = req.body;
 
     if (!testId || !type || !question || !content) {
       return res.status(400).json({ message: "Missing fields" });
@@ -100,6 +100,7 @@ exports.createQuestion = async (req, res) => {
       type,
       question,
       instruction,
+      section,
       content
     });
 
