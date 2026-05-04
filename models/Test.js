@@ -7,6 +7,7 @@ const testSchema = new mongoose.Schema({
   description: { type: String },           // darslik yoki tushuntirish
   thumbnail: { type: String },             // karta rasmi
   explanation: {type: String},
+  explanationImage: String,
 downloads: [
   {
     title: String,
