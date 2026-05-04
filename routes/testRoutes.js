@@ -15,7 +15,7 @@ const {
 
 const upload = require("../utils/Uploads");
 
-router.put("/tests/:id", uploadImage.single("image"), async (req, res) => {
+router.put("/:id", uploadImage.single("image"), async (req, res) => {
   try {
     const { explanation, downloadText } = req.body;
 
