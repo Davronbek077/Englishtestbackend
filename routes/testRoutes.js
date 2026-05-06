@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const uploadImage = require("../middleware/upload");
+const upload = require("../utils/Uploads");
+
 const Test = require("../models/Test");
 
 const {
@@ -13,9 +14,7 @@ const {
   deleteAllTests
 } = require("../controllers/testController");
 
-const upload = require("../utils/Uploads");
-
-router.put("/:id", uploadImage.single("image"), async (req, res) => {
+router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const imagekit = require("../utils/imagekit");
 
