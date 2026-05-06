@@ -15,6 +15,9 @@ const {
 } = require("../controllers/testController");
 
 router.put("/:id", upload.single("image"), async (req, res) => {
+
+  console.log("FILE:", req.file);
+  
   try {
     const imagekit = require("../utils/imagekit");
 
