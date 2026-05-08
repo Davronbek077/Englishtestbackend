@@ -18,6 +18,11 @@ const questionSchema = new mongoose.Schema(
       required: true
     },
 
+    sectionData: {
+      type: Object,
+      default: {}
+    },
+
     instruction: {
       type: String,
       default: ""
