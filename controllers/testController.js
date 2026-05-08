@@ -101,6 +101,7 @@ exports.createQuestion = async (req, res) => {
       question,
       instruction,
       section,
+      sectionData,
       content
     });
 
