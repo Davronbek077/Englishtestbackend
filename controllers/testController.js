@@ -202,11 +202,25 @@ exports.checkAnswers = async (req, res) => {
     const percent = total ? Math.round((score / total) * 100) : 0;
 
     if (userId) {
-      await User.findByIdAndUpdate(userId, {
-        $inc: {
-          totalScore: score
-        }
-      });
+      const updated = await User.findByIdAndUpdate(
+        userId,
+        {
+          $inc: {
+            totalScore: score,
+            testsCompleted: 1,
+            correctAnswers: score,
+            wrongAnswers: total - score
+          }
+        },
+        { new: true }
+      );
+    
+      const accuracy = Math.round(
+        (updated.correctAnswers /
+          (updated.correctAnswers + updated.wrongAnswers)) * 100
+      );
+    
+      await User.findByIdAndUpdate(userId, { accuracy });
     }
     
     res.json({

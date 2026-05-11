@@ -26,7 +26,28 @@ const userSchema = new mongoose.Schema({
   testsCompleted: {
     type: Number,
     default: 0
+  },
+
+  correctAnswers: {
+    type: Number,
+    default: 0
+  },
+
+  wrongAnswers: {
+    type: Number,
+    default: 0
+  },
+
+  streak: {
+    type: Number,
+    default: 0
+  },
+
+  accuracy: {
+    type: Number,
+    default: 0
   }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);
