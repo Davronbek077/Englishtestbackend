@@ -135,6 +135,8 @@ exports.deleteQuestion = async (req, res) => {
 /* CHECK ANSWERS */
 exports.checkAnswers = async (req, res) => {
   try {
+
+    console.log(req.body);
     const { answers, userId } = req.body;
 
     if (!answers || !Array.isArray(answers)) {
