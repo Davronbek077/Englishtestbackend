@@ -11,8 +11,7 @@ const {
   createTest,
   createQuestion,
   getTestById,
-  deleteAllTests,
-  getLeaderboard
+  deleteAllTests
 } = require("../controllers/testController");
 
 router.put("/:id", upload.single("image"), async (req, res) => {
