@@ -8,6 +8,8 @@ const fs = require("fs");
 
 const testRoutes = require("./routes/testRoutes");
 const questionRoutes = require("./routes/QuestionRoutes");
+const authRoutes = require("./routes/authRoutes");
+const leaderboardRoutes = require("./routes/leaderboardRoutes");
 
 const app = express();
 
@@ -30,6 +32,8 @@ connectDB();
 /* routes */
 app.use("/api/tests", testRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 /* static files */
 app.use("/uploads", express.static(uploadPath));

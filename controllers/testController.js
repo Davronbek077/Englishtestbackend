@@ -1,5 +1,6 @@
 const Test = require("../models/Test");
 const Question = require("../models/Question");
+const User = require("../models/User");
 
 /* GET ALL TESTS */
 exports.getTests = async (req, res) => {
@@ -134,7 +135,7 @@ exports.deleteQuestion = async (req, res) => {
 /* CHECK ANSWERS */
 exports.checkAnswers = async (req, res) => {
   try {
-    const { answers } = req.body;
+    const { answers, userId } = req.body;
 
     if (!answers || !Array.isArray(answers)) {
       return res.status(400).json({ message: "Invalid answers format" });
@@ -197,6 +198,14 @@ exports.checkAnswers = async (req, res) => {
     }
     
     const percent = total ? Math.round((score / total) * 100) : 0;
+
+    if (userId) {
+      await User.findByIdAndUpdate(userId, {
+        $inc: {
+          totalScore: score
+        }
+      });
+    }
     
     res.json({
       correct: score,
